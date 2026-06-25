@@ -1,5 +1,7 @@
 # Drafts
 
+![](https://github.com/mahmoudshahin1111/drafts/blob/master/logo.png)
+
 A notes management app built with Next.js 16, Shadcn UI, and PostgreSQL.
 
 ## Tech stack
