@@ -59,17 +59,4 @@ To stop and remove the database volume:
 docker compose down -v
 ```
 
----
-
-## Available scripts
-
-| Command | Description |
-|---|---|
-| `npm run dev` | Start development server |
-| `npm run build` | Build for production |
-| `npm run start` | Start production server |
-| `npm run lint` | Run ESLint |
-| `npx prisma migrate dev` | Run DB migrations (dev) |
-| `npx prisma migrate deploy` | Run DB migrations (production) |
-| `npx prisma studio` | Open Prisma Studio GUI |
 
