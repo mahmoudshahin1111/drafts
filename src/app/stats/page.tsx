@@ -1,6 +1,5 @@
 import { PropsWithChildren } from "react";
 
 export default function Page({ children }: PropsWithChildren<null>) {
-  return children;
+  return <div>stats</div>;
 }
-
