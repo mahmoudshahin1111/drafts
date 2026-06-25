@@ -2,6 +2,7 @@ import { getNote } from "@/services/notes";
 import { notFound } from "next/navigation";
 import { updateNoteAction } from "../../actions";
 import EditNoteForm from "./edit-note-form";
+import { Note } from "@/models/note";
 
 export default async function Page({
   params,
@@ -10,6 +11,8 @@ export default async function Page({
 }) {
   const resolvedParams = await params;
   const result = await getNote(resolvedParams.note);
+  console.log(result);
+  
 
   if (!result.success) {
     notFound();
@@ -17,5 +20,5 @@ export default async function Page({
 
   const note = result.data;
 
-  return <EditNoteForm note={note} updateNoteAction={updateNoteAction} />;
+  return <EditNoteForm note={note as Note} updateNoteAction={updateNoteAction} />;
 }

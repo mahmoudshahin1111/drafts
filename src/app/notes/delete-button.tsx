@@ -1,14 +1,13 @@
-"use client";
-
-import { deleteNoteAction } from "../actions";
 import { Button } from "@/components/ui/button";
+import { deleteNoteAction } from "./actions";
 
-export default function DeleteButton({
-  deleteNoteAction,
-  noteId,
-}: {
-  deleteNoteAction: typeof deleteNoteAction;
-  noteId: string;
-}) {
-  return <Button onClick={() => deleteNoteAction(noteId)}>Delete</Button>;
+export default function DeleteButton({ noteId }: { noteId: string }) {
+  return (
+    <form action={deleteNoteAction}>
+      <input type="hidden" name="noteId" value={noteId} />
+      <Button type="submit" variant="destructive">
+        Delete
+      </Button>
+    </form>
+  );
 }

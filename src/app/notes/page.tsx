@@ -1,9 +1,9 @@
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import NotesTable from "./notes-table";
-import { deleteNoteAction } from "./actions";
 import { getNotes } from "@/services/notes";
 import { forbidden } from "next/navigation";
+import { Note } from "@/models/note";
 
 export default async function Page() {
   const result = await getNotes();
@@ -18,7 +18,7 @@ export default async function Page() {
       <Button asChild>
         <Link href="/notes/new">New Note</Link>
       </Button>
-      <NotesTable items={items} deleteNoteAction={deleteNoteAction} />
+      <NotesTable items={items as Note[]}  />
     </div>
   );
 }

@@ -4,14 +4,13 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import type { Note } from "@/models/note";
 import Link from "next/link";
 import DeleteButton from "./delete-button";
-import { deleteNoteAction } from "./actions";
+import { Button } from "@/components/ui/button";
 
 type NotesTableProps = {
   items: Note[];
-  deleteNoteAction: typeof deleteNoteAction;
-};
+}
 
-export default function NotesTable({ items, deleteNoteAction }: NotesTableProps) {
+export default function NotesTable({ items }: NotesTableProps) {
   return (
     <Table>
       <TableHeader>
@@ -27,8 +26,10 @@ export default function NotesTable({ items, deleteNoteAction }: NotesTableProps)
             <TableCell>{item.title}</TableCell>
             <TableCell>{item.content}</TableCell>
             <TableCell>
-              <Link href={`/notes/${item.id}/edit`}>Update</Link>
-              <DeleteButton deleteNoteAction={deleteNoteAction} noteId={item.id} />
+              <Button asChild variant="secondary" >
+                <Link href={`/notes/${item.id}/edit`}>Update</Link>
+              </Button>
+              <DeleteButton noteId={item.id}  />
             </TableCell>
           </TableRow>
         ))}
