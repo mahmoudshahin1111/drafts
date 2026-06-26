@@ -33,6 +33,13 @@ export default function SharedNoteForm({
   errorMessage,
   className,
 }: SharedNoteFormProps) {
+  const formErrors = form.formState.errors as Record<
+    string,
+    { message?: string } | undefined
+  >;
+  const globalValidationError = formErrors.global?.message;
+  const globalErrorMessage = globalValidationError ?? errorMessage;
+
   return (
     <Form {...form}>
       <form
@@ -67,7 +74,11 @@ export default function SharedNoteForm({
           )}
         />
 
-        {errorMessage && <p className="text-sm text-destructive">{errorMessage}</p>}
+        {globalErrorMessage && (
+          <p className="rounded-md border border-destructive/30 bg-destructive/10 px-3 py-2 text-sm text-destructive">
+            {globalErrorMessage}
+          </p>
+        )}
 
         <Button type="submit" disabled={isPending} size="lg">
           {isPending && <Spinner />}

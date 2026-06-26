@@ -1,19 +1,16 @@
-import { z } from "zod";
+import { optional, z } from "zod";
 
 export const noteSchema = z
   .object({
     title: z
       .string()
-    
       .max(100, "Title must be at most 100 characters"),
     content: z
       .string()
-    
       .max(1000, "Content must be at most 1000 characters"),
-    //check  one of these fields are requeted title or content
   })
-  .refine((data) => data.title.trim() !== "" || data.content.trim() !== "", {
-    path: ["title"],
+  .refine((data) => data.title?.trim() !== "" || data.content?.trim() !== "", {
+    path: ["global"],
     message: "Either title or content is required",
   });
 

@@ -1,6 +1,7 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { getNotesCount } from "@/services/notes";
 import { FileText } from "lucide-react";
+import { pluralizeWord } from "@/lib/utils";
 
 export default async function Page() {
   const result = await getNotesCount();
@@ -21,7 +22,7 @@ export default async function Page() {
             <FileText className="size-5" />
           </div>
           <p>
-            You currently have {totalNotes} note{totalNotes === 1 ? "" : "s"} in
+            You currently have {totalNotes} {pluralizeWord(totalNotes, "note")} in
             your workspace.
           </p>
         </CardContent>

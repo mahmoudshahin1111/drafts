@@ -42,7 +42,7 @@ export default function EditNoteForm({ note }: EditNoteFormProps) {
 
   return (
     <div className="flex flex-col gap-4 w-full items-center">
-      <Card className="w-full md:w-4xl mt-[15vh]">
+      <Card className="w-full xl:w-4xl mt-[15vh]">
         <CardContent>
           <SharedNoteForm
           form={form}

@@ -58,7 +58,7 @@ export default async function Page({
   }
   return (
     <div className="flex flex-col gap-4 w-full items-center">
-      <Card className="w-full md:w-4xl mt-[15vh]">
+      <Card className="w-full xl:w-4xl mt-[15vh]">
         <CardHeader className="flex justify-end">
           <span className="flex-1 text-lg font-semibold">Notes</span>
           <Button asChild>
