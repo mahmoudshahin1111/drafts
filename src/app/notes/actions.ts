@@ -78,10 +78,10 @@ const updateNoteAction = async (
   return result.toJSON();
 };
 
-const getNotesAction = async (searchQuery: { page?: string }) => {
+const getNotesAction = async (searchQuery: { page?: string; pageSize?: string }) => {
   const parsed = notesPaginationQuerySchema.safeParse({
     page: searchQuery.page,
-    pageSize: 5,
+    pageSize: searchQuery.pageSize,
   });
 
   if (!parsed.success) {

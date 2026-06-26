@@ -1,23 +1,61 @@
 "use client";
 
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
 import type { Note } from "@/models/note";
 import Link from "next/link";
 import DeleteButton from "./delete-button";
 import { Button } from "@/components/ui/button";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 type NotesTableProps = {
   items: Note[];
   page: number;
+  pageSize: number;
   totalPages: number;
 };
 
-export default function NotesTable({ items, page, totalPages }: NotesTableProps) {
-  const prevPageHref = `/notes?page=${Math.max(1, page - 1)}`;
-  const nextPageHref = `/notes?page=${Math.min(totalPages, page + 1)}`;
+export default function NotesTable({
+  items,
+  page,
+  pageSize,
+  totalPages,
+}: NotesTableProps) {
+  const router = useRouter();
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
+
+  const buildHref = (targetPage: number, targetPageSize = pageSize) => {
+    const params = new URLSearchParams(searchParams.toString());
+    params.set("page", String(targetPage));
+    params.set("pageSize", String(targetPageSize));
+    return `${pathname}?${params.toString()}`;
+  };
+
+  const prevPageHref = buildHref(Math.max(1, page - 1));
+  const nextPageHref = buildHref(Math.min(totalPages, page + 1));
+
+  const handlePageSizeChange = (value: string) => {
+    const nextSize = Number(value);
+    router.push(buildHref(1, nextSize));
+  };
 
   return (
-    <div className="space-y-4">
+    <div className="flex flex-col gap-4 ">
       <Table>
         <TableHeader>
           <TableRow>
@@ -30,8 +68,12 @@ export default function NotesTable({ items, page, totalPages }: NotesTableProps)
           {items.map((item) => (
             <TableRow key={item.id}>
               <TableCell>{item.title}</TableCell>
-              <TableCell>{item.content}</TableCell>
-              <TableCell className="space-x-2">
+              <TableCell>
+                <div className="max-w-[36ch] truncate" title={item.content}>
+                  {item.content}
+                </div>
+              </TableCell>
+              <TableCell className="flex flex-row gap-2">
                 <Button asChild variant="secondary">
                   <Link href={`/notes/${item.id}/edit`}>Update</Link>
                 </Button>
@@ -43,14 +85,58 @@ export default function NotesTable({ items, page, totalPages }: NotesTableProps)
       </Table>
 
       <div className="flex items-center justify-end gap-2">
+        <label className="text-sm text-muted-foreground" htmlFor="page-size">
+          Rows per page
+        </label>
+        <Select
+          onValueChange={(e) => handlePageSizeChange(e)}
+          defaultValue="10"
+          value={String(pageSize)}
+        >
+          <SelectTrigger>
+            <SelectValue placeholder="Rows per page" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectGroup>
+              {[5, 10, 20, 50].map((size) => (
+                <SelectItem
+                  key={size}
+                  value={String(size)}
+                  onClick={() => handlePageSizeChange(String(size))}
+                >
+                  {size}
+                </SelectItem>
+              ))}
+            </SelectGroup>
+          </SelectContent>
+        </Select>
+
         <span className="text-muted-foreground text-sm">
           Page {page} of {totalPages}
         </span>
-        <Button type="button" variant="outline" disabled={page === 1} asChild={page > 1}>
-          {page > 1 ? <Link href={prevPageHref}>Previous</Link> : <span>Previous</span>}
+        <Button
+          type="button"
+          variant="outline"
+          disabled={page === 1}
+          asChild={page > 1}
+        >
+          {page > 1 ? (
+            <Link href={prevPageHref}>Previous</Link>
+          ) : (
+            <span>Previous</span>
+          )}
         </Button>
-        <Button type="button" variant="outline" disabled={page === totalPages} asChild={page < totalPages}>
-          {page < totalPages ? <Link href={nextPageHref}>Next</Link> : <span>Next</span>}
+        <Button
+          type="button"
+          variant="outline"
+          disabled={page === totalPages}
+          asChild={page < totalPages}
+        >
+          {page < totalPages ? (
+            <Link href={nextPageHref}>Next</Link>
+          ) : (
+            <span>Next</span>
+          )}
         </Button>
       </div>
     </div>

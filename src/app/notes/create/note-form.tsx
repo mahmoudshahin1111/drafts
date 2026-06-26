@@ -4,22 +4,12 @@ import { startTransition, useActionState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import type { SubmitHandler } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Button } from "@/components/ui/button";
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
-import { Spinner } from "@/components/ui/spinner";
-import { Textarea } from "@/components/ui/textarea";
 import { noteSchema, type NoteFormValues } from "@/schemas/note";
 import { createNoteAction } from "../actions";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
+import { Card, CardContent } from "@/components/ui/card";
+import SharedNoteForm from "@/components/note-form";
 
 export default function NoteForm() {
   const [state, dispatch, isPending] = useActionState(createNoteAction, null);
@@ -45,45 +35,18 @@ export default function NoteForm() {
   }, [state?.success, form, router, isPending]);
 
   return (
-    <Form {...form}>
-      <form onSubmit={form.handleSubmit(onValidSubmit)} className="space-y-4">
-        <FormField
-          control={form.control}
-          name="title"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Title</FormLabel>
-              <FormControl>
-                <Input {...field} disabled={isPending} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-
-        <FormField
-          control={form.control}
-          name="content"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Content</FormLabel>
-              <FormControl>
-                <Textarea {...field} disabled={isPending} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-
-        {state?.error && (
-          <p className="text-sm text-destructive">{state.error.message}</p>
-        )}
-
-        <Button type="submit" disabled={isPending}>
-          {isPending && <Spinner />}
-          Create Note
-        </Button>
-      </form>
-    </Form>
+    <div className="flex flex-col gap-4 w-full items-center">
+      <Card className="w-full md:w-4xl mt-[15vh]">
+        <CardContent>
+          <SharedNoteForm
+            form={form}
+            isPending={isPending}
+            onSubmit={onValidSubmit}
+            submitLabel="Create Note"
+            errorMessage={state?.error?.message}
+          />
+        </CardContent>
+      </Card>
+    </div>
   );
 }

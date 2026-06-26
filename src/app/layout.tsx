@@ -17,6 +17,7 @@ import {
 } from "@/components/ui/sidebar";
 import { Toaster } from "@/components/ui/sonner";
 import Link from "next/link";
+import { Notebook } from "lucide-react";
 
 const manrope = Manrope({
   variable: "--font-manrope",
@@ -54,7 +55,9 @@ export default function RootLayout({
         <Toaster />
         <SidebarProvider>
           <Sidebar>
-            <SidebarHeader>Drafts</SidebarHeader>
+            <SidebarHeader className="text-lg font-extrabold flex gap-2 flex-row items-center">
+              <Notebook /> <span>Drafts</span>
+            </SidebarHeader>
             <SidebarContent>
               <SidebarGroup>
                 <SidebarGroupLabel>Manage Notes</SidebarGroupLabel>
@@ -76,7 +79,7 @@ export default function RootLayout({
             </SidebarContent>
             <SidebarFooter />
           </Sidebar>
-          <main>
+          <main className="flex-1 flex flex-col overflow-hidden">
             <SidebarTrigger />
             <div>{children}</div>
           </main>

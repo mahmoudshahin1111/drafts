@@ -4,21 +4,11 @@ import { startTransition, useActionState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import type { SubmitHandler } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Button } from "@/components/ui/button";
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
-import { Spinner } from "@/components/ui/spinner";
-import { Textarea } from "@/components/ui/textarea";
 import { noteSchema, type NoteFormValues } from "@/schemas/note";
 import { updateNoteAction } from "../../actions";
 import { toast } from "sonner";
+import SharedNoteForm from "@/components/note-form";
+import { Card, CardContent } from "@/components/ui/card";
 
 type EditNote = {
   id: string;
@@ -51,45 +41,18 @@ export default function EditNoteForm({ note }: EditNoteFormProps) {
   }, [state?.success, form, isPending]);
 
   return (
-    <Form {...form}>
-      <form onSubmit={form.handleSubmit(onValidSubmit)} className="space-y-4">
-        <FormField
-          control={form.control}
-          name="title"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Title</FormLabel>
-              <FormControl>
-                <Input {...field} disabled={isPending} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
+    <div className="flex flex-col gap-4 w-full items-center">
+      <Card className="w-full md:w-4xl mt-[15vh]">
+        <CardContent>
+          <SharedNoteForm
+          form={form}
+          isPending={isPending}
+          onSubmit={onValidSubmit}
+          submitLabel="Update Note"
+          errorMessage={state?.error?.message}
         />
-
-        <FormField
-          control={form.control}
-          name="content"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Content</FormLabel>
-              <FormControl>
-                <Textarea {...field} disabled={isPending} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-
-        {state?.error && (
-          <p className="text-sm text-destructive">{state.error.message}</p>
-        )}
-
-        <Button type="submit" disabled={isPending}>
-          {isPending && <Spinner />}
-          Update Note
-        </Button>
-      </form>
-    </Form>
+        </CardContent>
+      </Card>
+    </div>
   );
 }

@@ -13,21 +13,23 @@ import {
   EmptyContent,
 } from "@/components/ui/empty";
 import { ArrowUpRightIcon, NotepadText } from "lucide-react";
+import { Card, CardContent, CardHeader } from "@/components/ui/card";
 
 export default async function Page({
   searchParams,
 }: {
-  searchParams: Promise<{ page?: string }>;
+  searchParams: Promise<{ page?: string; pageSize?: string }>;
 }) {
   const query = await searchParams;
-  const result = await getNotesAction({ page: query.page });
+  const result = await getNotesAction({ page: query.page, pageSize: query.pageSize });
 
   if (!result.success) {
-     return notFound();
+    return notFound();
   }
-  const { items, page, totalPages } = result.data as {
+  const { items, page, pageSize, totalPages } = result.data as {
     items: Note[];
     page: number;
+    pageSize: number;
     totalPages: number;
   };
 
@@ -55,15 +57,23 @@ export default async function Page({
     );
   }
   return (
-    <div>
-      <Button asChild>
-        <Link href="/notes/create">Create Note</Link>
-      </Button>
-      <NotesTable
-        items={items}
-        page={page}
-        totalPages={totalPages}
-      />
+    <div className="flex flex-col gap-4 w-full items-center">
+      <Card className="w-full md:w-4xl mt-[15vh]">
+        <CardHeader className="flex justify-end">
+          <span className="flex-1 text-lg font-semibold">Notes</span>
+          <Button asChild>
+            <Link href="/notes/create">Create Note</Link>
+          </Button>
+        </CardHeader>
+        <CardContent>
+          <NotesTable
+            items={items}
+            page={page}
+            pageSize={pageSize}
+            totalPages={totalPages}
+          />
+        </CardContent>
+      </Card>
     </div>
   );
 }
