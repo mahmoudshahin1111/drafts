@@ -96,4 +96,10 @@ async function getNotes(page: number, pageSize: number) {
   });
 }
 
-export { createNote, deleteNote, updateNote, getNote, getNotes };
+async function getNotesCount() {
+  const totalCount = await prisma.note.count();
+
+  return Result.successResult({ totalCount });
+}
+
+export { createNote, deleteNote, updateNote, getNote, getNotes, getNotesCount };

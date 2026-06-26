@@ -13,6 +13,7 @@ import Link from "next/link";
 import DeleteButton from "./delete-button";
 import { Button } from "@/components/ui/button";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { CircleSlash2 } from "lucide-react";
 import {
   Select,
   SelectContent,
@@ -54,6 +55,18 @@ export default function NotesTable({
     router.push(buildHref(1, nextSize));
   };
 
+  const getDisplayValue = (value: string | null | undefined) => {
+    const normalized = value?.trim();
+    return normalized && normalized.length > 0 ? normalized : null;
+  };
+
+  const renderEmpty = (label: string) => (
+    <span className="inline-flex items-center gap-1.5 text-muted-foreground italic">
+      <CircleSlash2 className="size-3.5" aria-hidden="true" />
+      {label}
+    </span>
+  );
+
   return (
     <div className="flex flex-col gap-4 ">
       <Table>
@@ -67,11 +80,20 @@ export default function NotesTable({
         <TableBody>
           {items.map((item) => (
             <TableRow key={item.id}>
-              <TableCell>{item.title}</TableCell>
               <TableCell>
-                <div className="max-w-[36ch] truncate" title={item.content}>
-                  {item.content}
-                </div>
+                {getDisplayValue(item.title) ?? renderEmpty("No title")}
+              </TableCell>
+              <TableCell>
+                {getDisplayValue(item.content) ? (
+                  <div
+                    className="max-w-[36ch] truncate"
+                    title={getDisplayValue(item.content) ?? undefined}
+                  >
+                    {getDisplayValue(item.content)}
+                  </div>
+                ) : (
+                  renderEmpty("No content")
+                )}
               </TableCell>
               <TableCell className="flex flex-row gap-2">
                 <Button asChild variant="secondary">

@@ -1,12 +1,19 @@
 "use client";
 
-import { useActionState } from "react";
+import { useActionState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Spinner } from "@/components/ui/spinner";
 import { deleteNoteAction } from "./actions";
+import { toast } from "sonner";
 
 export default function DeleteButton({ noteId }: { noteId: string }) {
-  const [, action, isPending] = useActionState(deleteNoteAction, null);
+  const [state, action, isPending] = useActionState(deleteNoteAction, null);
+
+  useEffect(() => {
+    if (state?.success && !isPending) {
+      toast.success("Note deleted successfully");
+    }
+  }, [state?.success, isPending]);
 
   return (
     <form action={action}>

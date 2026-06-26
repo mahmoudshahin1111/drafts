@@ -1,15 +1,21 @@
 import { z } from "zod";
 
-export const noteSchema = z.object({
-  title: z
-    .string()
-    .min(1, "Title is required")
-    .max(100, "Title must be at most 100 characters"),
-  content: z
-    .string()
-    .min(1, "Content is required")
-    .max(1000, "Content must be at most 1000 characters"),
-});
+export const noteSchema = z
+  .object({
+    title: z
+      .string()
+    
+      .max(100, "Title must be at most 100 characters"),
+    content: z
+      .string()
+    
+      .max(1000, "Content must be at most 1000 characters"),
+    //check  one of these fields are requeted title or content
+  })
+  .refine((data) => data.title.trim() !== "" || data.content.trim() !== "", {
+    path: ["title"],
+    message: "Either title or content is required",
+  });
 
 export const deleteNoteSchema = z.object({
   noteId: z.string().min(1, "Note id is required"),

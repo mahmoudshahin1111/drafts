@@ -51,6 +51,8 @@ const deleteNoteAction = async (
   if (result.success) {
     refresh();
   }
+  console.log(result);
+  
   return result.toJSON();
 };
 
