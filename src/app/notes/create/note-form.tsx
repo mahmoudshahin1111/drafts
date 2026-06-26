@@ -17,38 +17,32 @@ import { Input } from "@/components/ui/input";
 import { Spinner } from "@/components/ui/spinner";
 import { Textarea } from "@/components/ui/textarea";
 import { noteSchema, type NoteFormValues } from "@/schemas/note";
-import { updateNoteAction } from "../../actions";
+import { createNoteAction } from "../actions";
 import { toast } from "sonner";
+import { useRouter } from "next/navigation";
 
-type EditNote = {
-  id: string;
-  title: string;
-  content: string;
-};
-
-type EditNoteFormProps = {
-  note: EditNote;
-};
-
-export default function EditNoteForm({ note }: EditNoteFormProps) {
-  const [state, dispatch, isPending] = useActionState(updateNoteAction, null);
+export default function NoteForm() {
+  const [state, dispatch, isPending] = useActionState(createNoteAction, null);
+  const router = useRouter();
 
   const form = useForm<NoteFormValues>({
     resolver: zodResolver(noteSchema),
-    defaultValues: { title: note.title, content: note.content },
+    defaultValues: { title: "", content: "" },
   });
 
   const onValidSubmit: SubmitHandler<NoteFormValues> = (values) => {
     startTransition(() => {
-      dispatch({ ...values, noteId: note.id });
+      dispatch(values);
     });
   };
 
   useEffect(() => {
     if (state?.success && !isPending) {
-      toast.success("Note updated successfully");
+      form.reset();
+      toast.success("Note created successfully");
+      router.replace("/notes");
     }
-  }, [state?.success, form, isPending]);
+  }, [state?.success, form, router, isPending]);
 
   return (
     <Form {...form}>
@@ -87,7 +81,7 @@ export default function EditNoteForm({ note }: EditNoteFormProps) {
 
         <Button type="submit" disabled={isPending}>
           {isPending && <Spinner />}
-          Update Note
+          Create Note
         </Button>
       </form>
     </Form>

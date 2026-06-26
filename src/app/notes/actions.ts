@@ -1,40 +1,99 @@
 "use server";
-import { createNote, deleteNote, updateNote } from "@/services/notes";
+import { APP_ERRORS } from "@/constants/errors";
+import { createNote, deleteNote, getNotes, updateNote } from "@/services/notes";
+import {
+  deleteNoteSchema,
+  noteSchema,
+  notesPaginationQuerySchema,
+  updateNoteSchema,
+  type NoteFormValues,
+} from "@/schemas/note";
 import { refresh } from "next/cache";
-import { forbidden, redirect } from "next/navigation";
+import { Result } from "@/models/result";
 
-const createNoteAction = async (formData: FormData) => {
-  const title = formData.get("title") as string;
-  const content = formData.get("content") as string;
-  const result = await createNote(title, content);
+const createNoteAction = async (
+  _prevState: Record<string, unknown> | null,
+  values: NoteFormValues,
+) => {
+  const parsed = noteSchema.safeParse(values);
+
+  if (!parsed.success) {
+    return Result.failureResult({
+      key: APP_ERRORS.INVALID_INPUT.key,
+      message: parsed.error.issues[0]?.message ?? APP_ERRORS.INVALID_INPUT.message,
+    }).toJSON();
+  }
+
+  const result = await createNote(parsed.data.title, parsed.data.content);
 
   if (result.success) {
-    redirect(`/notes/${result.data?.id}/edit`);
-  } else {
-    forbidden();
+    refresh();
   }
+
+  return result.toJSON();
 };
 
-const deleteNoteAction = async (noteId: FormData) => {
-  const id = noteId.get("noteId") as string;
+const deleteNoteAction = async (
+  _prevState: Record<string, unknown> | null,
+  formData: FormData,
+) => {
+  const id = formData.get("noteId") as string;
+
+  const parsed = deleteNoteSchema.safeParse({ noteId: id });
+  if (!parsed.success) {
+    return Result.failureResult({
+      key: APP_ERRORS.INVALID_INPUT.key,
+      message: parsed.error.issues[0]?.message ?? APP_ERRORS.INVALID_INPUT.message,
+    }).toJSON();
+  }
+
   const result = await deleteNote(id);
   if (result.success) {
     refresh();
-  } else {
-    forbidden();
   }
+  return result.toJSON();
 };
 
-const updateNoteAction = async (formData: FormData) => {
-  const noteId = formData.get("noteId") as string;
-  const title = formData.get("title") as string;
-  const content = formData.get("content") as string;
-  const result = await updateNote(noteId, title, content);
+const updateNoteAction = async (
+  _prevState: Record<string, unknown> | null,
+  values: NoteFormValues & { noteId: string },
+) => {
+  const parsed = updateNoteSchema.safeParse(values);
+
+  if (!parsed.success) {
+    return Result.failureResult({
+      key: APP_ERRORS.INVALID_INPUT.key,
+      message: parsed.error.issues[0]?.message ?? APP_ERRORS.INVALID_INPUT.message,
+    }).toJSON();
+  }
+
+  const result = await updateNote(
+    parsed.data.noteId,
+    parsed.data.title,
+    parsed.data.content,
+  );
   if (result.success) {
     refresh();
-  } else {
-    forbidden();
   }
+  return result.toJSON();
 };
 
-export { createNoteAction, deleteNoteAction, updateNoteAction };
+const getNotesAction = async (searchQuery: { page?: string }) => {
+  const parsed = notesPaginationQuerySchema.safeParse({
+    page: searchQuery.page,
+    pageSize: 5,
+  });
+
+  if (!parsed.success) {
+    return Result.failureResult({
+      key: APP_ERRORS.INVALID_PAGINATION_QUERY.key,
+      message:
+        parsed.error.issues[0]?.message ?? APP_ERRORS.INVALID_PAGINATION_QUERY.message,
+    }).toJSON();
+  }
+
+  const result = await getNotes(parsed.data.page, parsed.data.pageSize);
+  return result.toJSON();
+};
+
+export { createNoteAction, deleteNoteAction, updateNoteAction, getNotesAction };
