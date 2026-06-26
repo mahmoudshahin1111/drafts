@@ -14,6 +14,7 @@ import {
 } from "@/components/ui/empty";
 import { ArrowUpRightIcon, NotepadText } from "lucide-react";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
+import PageHeader from "@/components/page-header";
 
 export default async function Page({
   searchParams,
@@ -21,7 +22,10 @@ export default async function Page({
   searchParams: Promise<{ page?: string; pageSize?: string }>;
 }) {
   const query = await searchParams;
-  const result = await getNotesAction({ page: query.page, pageSize: query.pageSize });
+  const result = await getNotesAction({
+    page: query.page,
+    pageSize: query.pageSize ?? "10",
+  });
 
   if (!result.success) {
     return notFound();
@@ -35,30 +39,40 @@ export default async function Page({
 
   if (items?.length === 0) {
     return (
-      <Empty>
-        <EmptyHeader>
-          <EmptyMedia variant="icon">
-            <NotepadText />
-          </EmptyMedia>
-          <EmptyTitle>No Notes Yet</EmptyTitle>
-          <EmptyDescription>
-            You haven&apos;t created any notes yet. Get started by creating your
-            first note.
-          </EmptyDescription>
-        </EmptyHeader>
-        <EmptyContent className="flex-row justify-center gap-2">
-          <Button asChild variant="secondary">
-            <Link href="/notes/create">
-              Create Note <ArrowUpRightIcon />
-            </Link>
-          </Button>
-        </EmptyContent>
-      </Empty>
+      <div className="mx-auto flex w-full max-w-6xl flex-col gap-6 px-4 py-6 lg:px-8">
+        <PageHeader
+          title="Notes"
+          description="Browse, manage, and organize all your notes in one place."
+        />
+        <Empty>
+          <EmptyHeader>
+            <EmptyMedia variant="icon">
+              <NotepadText />
+            </EmptyMedia>
+            <EmptyTitle>No Notes Yet</EmptyTitle>
+            <EmptyDescription>
+              You haven&apos;t created any notes yet. Get started by creating
+              your first note.
+            </EmptyDescription>
+          </EmptyHeader>
+          <EmptyContent className="flex-row justify-center gap-2">
+            <Button asChild variant="secondary">
+              <Link href="/notes/create">
+                Create Note <ArrowUpRightIcon />
+              </Link>
+            </Button>
+          </EmptyContent>
+        </Empty>
+      </div>
     );
   }
   return (
-    <div className="flex flex-col gap-4 w-full items-center">
-      <Card className="w-full xl:w-4xl mt-[15vh]">
+    <div className="mx-auto flex w-full max-w-6xl flex-col gap-6 px-4 py-6 lg:px-8">
+      <PageHeader
+        title="Notes"
+        description="Browse, manage, and organize all your notes in one place."
+      />
+      <Card className="w-full">
         <CardHeader className="flex justify-end">
           <span className="flex-1 text-lg font-semibold">Notes</span>
           <Button asChild>

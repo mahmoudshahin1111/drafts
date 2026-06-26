@@ -43,6 +43,7 @@ export default function NoteForm() {
             isPending={isPending}
             onSubmit={onValidSubmit}
             submitLabel="Create Note"
+            cancelHref="/notes"
             errorMessage={state?.error?.message}
           />
         </CardContent>

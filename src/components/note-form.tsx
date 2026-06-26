@@ -1,6 +1,7 @@
 "use client";
 
 import type { SubmitHandler, UseFormReturn } from "react-hook-form";
+import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -21,6 +22,8 @@ type SharedNoteFormProps = {
   isPending: boolean;
   onSubmit: SubmitHandler<NoteFormValues>;
   submitLabel: string;
+  cancelHref?: string;
+  cancelLabel?: string;
   errorMessage?: string;
   className?: string;
 };
@@ -30,6 +33,8 @@ export default function SharedNoteForm({
   isPending,
   onSubmit,
   submitLabel,
+  cancelHref,
+  cancelLabel = "Cancel",
   errorMessage,
   className,
 }: SharedNoteFormProps) {
@@ -80,10 +85,18 @@ export default function SharedNoteForm({
           </p>
         )}
 
-        <Button type="submit" disabled={isPending} size="lg">
-          {isPending && <Spinner />}
-          {submitLabel}
-        </Button>
+        <div className="flex items-center justify-end gap-2">
+          {cancelHref ? (
+            <Button asChild type="button" variant="outline" size="lg" disabled={isPending}>
+              <Link href={cancelHref}>{cancelLabel}</Link>
+            </Button>
+          ) : null}
+
+          <Button type="submit" disabled={isPending} size="lg">
+            {isPending && <Spinner />}
+            {submitLabel}
+          </Button>
+        </div>
       </form>
     </Form>
   );

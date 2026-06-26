@@ -1,23 +1,9 @@
 import type { Metadata } from "next";
 import { Manrope, Sora, Geist_Mono } from "next/font/google";
 import "./globals.css";
-import {
-  SidebarProvider,
-  SidebarHeader,
-  SidebarContent,
-  SidebarGroup,
-  SidebarGroupLabel,
-  SidebarGroupContent,
-  SidebarMenu,
-  SidebarMenuItem,
-  SidebarMenuButton,
-  SidebarFooter,
-  SidebarTrigger,
-  Sidebar,
-} from "@/components/ui/sidebar";
 import { Toaster } from "@/components/ui/sonner";
-import Link from "next/link";
-import { Notebook } from "lucide-react";
+import AppHeader from "../components/app-header";
+import { ScrollArea } from "@/components/ui/scroll-area";
 
 const manrope = Manrope({
   variable: "--font-manrope",
@@ -51,39 +37,12 @@ export default function RootLayout({
       lang="en"
       className={`${manrope.variable} ${sora.variable} ${geistMono.variable} h-full antialiased`}
     >
-      <body className="min-h-full flex flex-col text-[16px] leading-7">
+      <body className="h-dvh w-dvw p-0 m-0 flex flex-col text-lg leading-7 overflow-y-auto overflow-x-hidden">
         <Toaster />
-        <SidebarProvider>
-          <Sidebar>
-            <SidebarHeader className="text-lg font-extrabold flex gap-2 flex-row items-center">
-              <Notebook /> <span>Drafts</span>
-            </SidebarHeader>
-            <SidebarContent>
-              <SidebarGroup>
-                <SidebarGroupLabel>Manage Notes</SidebarGroupLabel>
-                <SidebarGroupContent>
-                  <SidebarMenu>
-                    <SidebarMenuItem>
-                      <SidebarMenuButton asChild isActive>
-                        <Link href="/notes">Notes</Link>
-                      </SidebarMenuButton>
-                    </SidebarMenuItem>
-                    <SidebarMenuItem>
-                      <SidebarMenuButton asChild>
-                        <Link href="/stats">Stats</Link>
-                      </SidebarMenuButton>
-                    </SidebarMenuItem>
-                  </SidebarMenu>
-                </SidebarGroupContent>
-              </SidebarGroup>
-            </SidebarContent>
-            <SidebarFooter />
-          </Sidebar>
-          <main className="flex-1 flex flex-col overflow-hidden">
-            <SidebarTrigger />
-            <div>{children}</div>
-          </main>
-        </SidebarProvider>
+        <AppHeader />
+        <main className="w-full flex flex-col">
+         {children}
+        </main>
       </body>
     </html>
   );

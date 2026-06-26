@@ -22,6 +22,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 
 type NotesTableProps = {
   items: Note[];
@@ -68,43 +69,53 @@ export default function NotesTable({
   );
 
   return (
-    <div className="flex flex-col gap-4 ">
-      <Table>
-        <TableHeader>
-          <TableRow>
-            <TableHead>Title</TableHead>
-            <TableHead>Content</TableHead>
-            <TableHead>Actions</TableHead>
-          </TableRow>
-        </TableHeader>
-        <TableBody>
-          {items.map((item) => (
-            <TableRow key={item.id}>
-              <TableCell>
-                {getDisplayValue(item.title) ?? renderEmpty("No title")}
-              </TableCell>
-              <TableCell>
-                {getDisplayValue(item.content) ? (
+    <div className="flex flex-col gap-4">
+      <ScrollArea className="h-[60vh] rounded-lg border">
+        <Table>
+          <TableHeader>
+            <TableRow>
+              <TableHead className="w-30">Title</TableHead>
+              <TableHead>Content</TableHead>
+              <TableHead className="w-30 ps-4">Actions</TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {items.map((item) => (
+              <TableRow key={item.id}>
+                <TableCell className="w-30">
                   <div
                     className="max-w-[36ch] truncate"
-                    title={getDisplayValue(item.content) ?? undefined}
+                    title={getDisplayValue(item.title) ?? undefined}
                   >
-                    {getDisplayValue(item.content)}
+                    {getDisplayValue(item.title)}
                   </div>
-                ) : (
-                  renderEmpty("No content")
-                )}
-              </TableCell>
-              <TableCell className="flex flex-row gap-2">
-                <Button asChild variant="secondary">
-                  <Link href={`/notes/${item.id}/edit`}>Update</Link>
-                </Button>
-                <DeleteButton noteId={item.id} />
-              </TableCell>
-            </TableRow>
-          ))}
-        </TableBody>
-      </Table>
+                </TableCell>
+                <TableCell>
+                  {getDisplayValue(item.content) ? (
+                    <div
+                      className="max-w-[36ch] truncate"
+                      title={getDisplayValue(item.content) ?? undefined}
+                    >
+                      {getDisplayValue(item.content)}
+                    </div>
+                  ) : (
+                    renderEmpty("No content")
+                  )}
+                </TableCell>
+                <TableCell className="w-30">
+                  <div className="flex flex-row gap-2">
+                    <Button asChild variant="secondary">
+                      <Link href={`/notes/${item.id}/edit`}>Update</Link>
+                    </Button>
+                    <DeleteButton noteId={item.id} />
+                  </div>
+                </TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+        <ScrollBar orientation="horizontal" />
+      </ScrollArea>
 
       <div className="flex items-center justify-end gap-2">
         <label className="text-sm text-muted-foreground" htmlFor="page-size">
@@ -120,7 +131,7 @@ export default function NotesTable({
           </SelectTrigger>
           <SelectContent>
             <SelectGroup>
-              {[5, 10, 20, 50].map((size) => (
+              {[10, 20, 50].map((size) => (
                 <SelectItem
                   key={size}
                   value={String(size)}

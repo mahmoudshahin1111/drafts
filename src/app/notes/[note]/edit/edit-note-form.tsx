@@ -49,6 +49,7 @@ export default function EditNoteForm({ note }: EditNoteFormProps) {
           isPending={isPending}
           onSubmit={onValidSubmit}
           submitLabel="Update Note"
+          cancelHref="/notes"
           errorMessage={state?.error?.message}
         />
         </CardContent>
