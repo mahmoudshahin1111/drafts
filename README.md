@@ -33,17 +33,24 @@ npm install
 cp .env.example .env
 ```
 
+### 3. Start PostgreSQL and run the app
+
+```bash
+docker compose up -d
+npm run dev
+```
+
 Open [http://localhost:3000](http://localhost:3000).
 
 ---
 
-## Running with Docker (full stack)
+## Running with Docker (database only)
 
-Builds the Next.js app and starts both the app and database containers:
+Starts PostgreSQL in Docker. The Next.js app runs on your host via `npm run dev`.
 
 ```bash
 cp .env.example .env
-docker compose up --build
+docker compose up -d
 npm run dev
 ```
 
@@ -60,5 +67,15 @@ To stop and remove the database volume:
 ```bash
 docker compose down -v
 ```
+
+## Changelog
+
+### v1.0.0
+
+- Added notes view toggle between table and cards (`/notes?view=table` and `/notes?view=cards`)
+- Cards view now uses infinite scroll (loads notes page by page)
+- Added paginated notes API endpoint at `GET /api/notes`
+- Added reusable paged result model: `PagedResult<T>`
+- Centralized pagination defaults in `src/constants/page.ts`
 
 

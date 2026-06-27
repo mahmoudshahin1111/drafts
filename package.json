@@ -1,6 +1,8 @@
 {
   "name": "drafts",
-  "version": "0.1.0",
+  "version": "1.0.0",
+  "author": "mahmoudshahin1111",
+  "homepage": "https://github.com/mahmoudshahin1111",
   "private": true,
   "scripts": {
     "dev": "next dev",
