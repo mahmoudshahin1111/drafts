@@ -1,10 +1,9 @@
 "use server";
 import { APP_ERRORS } from "@/constants/errors";
-import { createNote, deleteNote, getNotes, updateNote } from "@/services/notes";
+import { createNote, deleteNote, updateNote } from "@/services/notes";
 import {
   deleteNoteSchema,
   noteSchema,
-  notesPaginationQuerySchema,
   updateNoteSchema,
   type NoteFormValues,
 } from "@/schemas/note";
@@ -87,22 +86,4 @@ const updateNoteAction = async (
   return result.toJSON();
 };
 
-const getNotesAction = async (searchQuery: { page?: string; pageSize?: string }) => {
-  const parsed = notesPaginationQuerySchema.safeParse({
-    page: searchQuery.page,
-    pageSize: searchQuery.pageSize,
-  });
-
-  if (!parsed.success) {
-    return Result.failureResult({
-      key: APP_ERRORS.INVALID_PAGINATION_QUERY.key,
-      message:
-        parsed.error.issues[0]?.message ?? APP_ERRORS.INVALID_PAGINATION_QUERY.message,
-    }).toJSON();
-  }
-
-  const result = await getNotes(parsed.data.page, parsed.data.pageSize);
-  return result.toJSON();
-};
-
-export { createNoteAction, deleteNoteAction, updateNoteAction, getNotesAction };
+export { createNoteAction, deleteNoteAction, updateNoteAction };

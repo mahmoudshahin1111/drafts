@@ -1,9 +1,10 @@
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import NotesTable from "./notes-table";
-import { getNotesAction } from "./actions";
 import { notFound } from "next/navigation";
 import type { Note } from "@/generated/prisma/client";
+import { notesPaginationQuerySchema } from "@/schemas/note";
+import { getNotes } from "@/services/notes";
 import {
   Empty,
   EmptyHeader,
@@ -22,10 +23,16 @@ export default async function Page({
   searchParams: Promise<{ page?: string; pageSize?: string }>;
 }) {
   const query = await searchParams;
-  const result = await getNotesAction({
+  const parsedQuery = notesPaginationQuerySchema.safeParse({
     page: query.page,
     pageSize: query.pageSize ?? "10",
   });
+
+  if (!parsedQuery.success) {
+    return notFound();
+  }
+
+  const result = await getNotes(parsedQuery.data.page, parsedQuery.data.pageSize);
 
   if (!result.success) {
     return notFound();
