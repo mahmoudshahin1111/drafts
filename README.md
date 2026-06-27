@@ -12,6 +12,10 @@ A notes management app built with Next.js 16, Shadcn UI, and PostgreSQL.
 - **Database** — PostgreSQL 17
 - **Language** — TypeScript
 
+## Preview:
+<img width="1114" height="759" alt="2026-06-27_7-45-55" src="https://github.com/user-attachments/assets/0d93840b-f05e-441c-927f-6fd18053dc79" />
+
+
 ## Running locally
 
 ### Prerequisites
