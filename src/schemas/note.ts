@@ -1,6 +1,11 @@
 import { isMatch } from "date-fns";
 import { z } from "zod";
 import { SUPPORTED_NOTE_DATE_FORMAT } from "../constants/date";
+import {
+  DEFAULT_PAGE,
+  DEFAULT_PAGE_SIZE,
+  MAX_PAGE_SIZE,
+} from "../constants/page";
 
 export const noteSchema = z
   .object({
@@ -35,8 +40,13 @@ export const updateNoteSchema = noteSchema.extend({
 });
 
 export const notesPaginationQuerySchema = z.object({
-  page: z.coerce.number().int().min(1).default(1),
-  pageSize: z.coerce.number().int().min(1).max(50).default(5),
+  page: z.coerce.number().int().min(1).default(DEFAULT_PAGE),
+  pageSize: z.coerce
+    .number()
+    .int()
+    .min(1)
+    .max(MAX_PAGE_SIZE)
+    .default(DEFAULT_PAGE_SIZE),
 });
 
 export type NoteFormValues = z.infer<typeof noteSchema>;

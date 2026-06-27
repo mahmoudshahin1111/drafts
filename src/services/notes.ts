@@ -120,6 +120,23 @@ async function getNotesCount() {
   return Result.successResult({ totalCount });
 }
 
+async function getAllNotes() {
+  const notes = await prisma.note.findMany({
+    orderBy: { createdAt: "desc" },
+    select: {
+      id: true,
+      color: true,
+      title: true,
+      content: true,
+      noteDate: true,
+      createdAt: true,
+      updatedAt: true,
+    },
+  });
+
+  return Result.successResult(notes);
+}
+
 async function getCalendarNotes(startDate: Date, endDate: Date) {
   const notes = await prisma.note.findMany({
     select: {
@@ -146,6 +163,7 @@ export {
   updateNote,
   getNote,
   getNotes,
+  getAllNotes,
   getNotesCount,
   getCalendarNotes,
 };
