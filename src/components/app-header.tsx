@@ -18,6 +18,7 @@ const links = [
   { href: "/notes", label: "Notes" },
   { href: "/calendar", label: "Calendar" },
   { href: "/stats", label: "Stats" },
+  { href: "/about", label: "About" },
 ];
 
 export default function AppHeader() {
