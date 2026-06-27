@@ -1,24 +1,47 @@
 "use client";
 
 import { startTransition, useActionState, useEffect } from "react";
+import { format, isValid, parseISO } from "date-fns";
 import { useForm } from "react-hook-form";
 import type { SubmitHandler } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { noteSchema, type NoteFormValues } from "@/schemas/note";
 import { createNoteAction } from "../actions";
 import { toast } from "sonner";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { Card, CardContent } from "@/components/ui/card";
 import SharedNoteForm from "@/components/note-form";
 import { getCurrentDate } from "@/lib/utils";
+import { SUPPORTED_NOTE_DATE_FORMAT } from "@/constants/date";
+
+function getDefaultNoteDate(startDateParam: string | null) {
+  if (!startDateParam) {
+    return getCurrentDate();
+  }
+
+  const parsedStartDate = parseISO(startDateParam);
+
+  if (!isValid(parsedStartDate)) {
+    return getCurrentDate();
+  }
+
+  return format(parsedStartDate, SUPPORTED_NOTE_DATE_FORMAT);
+}
 
 export default function NoteForm() {
   const [state, dispatch, isPending] = useActionState(createNoteAction, null);
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const defaultNoteDate = getDefaultNoteDate(searchParams.get("start"));
 
   const form = useForm<NoteFormValues>({
     resolver: zodResolver(noteSchema),
-    defaultValues: { title: "", content: "", noteDate: getCurrentDate() },
+    defaultValues: {
+      color: "#3b82f6",
+      title: "",
+      content: "",
+      noteDate: defaultNoteDate,
+    },
   });
 
   const onValidSubmit: SubmitHandler<NoteFormValues> = (values) => {
@@ -29,11 +52,16 @@ export default function NoteForm() {
 
   useEffect(() => {
     if (state?.success && !isPending) {
-      form.reset({ title: "", content: "", noteDate: getCurrentDate() });
+      form.reset({
+        color: "#3b82f6",
+        title: "",
+        content: "",
+        noteDate: defaultNoteDate,
+      });
       toast.success("Note created successfully");
       router.replace("/notes");
     }
-  }, [state?.success, form, router, isPending]);
+  }, [state?.success, form, router, isPending, defaultNoteDate]);
 
   return (
     <div className="flex flex-col gap-4 w-full items-center">

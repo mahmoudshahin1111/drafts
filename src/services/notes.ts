@@ -2,17 +2,23 @@ import { prisma } from "@/lib/prisma";
 import { APP_ERRORS } from "@/constants/errors";
 import { Result } from "@/models/result";
 
-async function createNote(title: string, content: string, noteDate: string) {
+async function createNote(
+  title: string,
+  content: string,
+  noteDate: string,
+  color: string,
+) {
   const note = await prisma.note.create({
     select: {
       id: true,
+      color: true,
       title: true,
       content: true,
       noteDate: true,
       createdAt: true,
       updatedAt: true,
     },
-    data: { title, content, noteDate: new Date(noteDate) },
+    data: { title, content, noteDate: new Date(noteDate), color },
   });
   return Result.successResult(note);
 }
@@ -31,6 +37,7 @@ async function updateNote(
   title: string,
   content: string,
   noteDate: string,
+  color: string,
 ) {
   const existing = await prisma.note.findUnique({ where: { id: noteId } });
   if (!existing) {
@@ -39,6 +46,7 @@ async function updateNote(
   const note = await prisma.note.update({
     select: {
       id: true,
+      color: true,
       title: true,
       content: true,
       noteDate: true,
@@ -46,7 +54,7 @@ async function updateNote(
       updatedAt: true,
     },
     where: { id: noteId },
-    data: { title, content, noteDate: new Date(noteDate) },
+    data: { title, content, noteDate: new Date(noteDate), color },
   });
   return Result.successResult(note);
 }
@@ -56,6 +64,7 @@ async function getNote(noteId: string) {
     where: { id: noteId },
     select: {
       id: true,
+      color: true,
       title: true,
       content: true,
       noteDate: true,
@@ -78,6 +87,7 @@ async function getNotes(page: number, pageSize: number) {
       orderBy: { createdAt: "desc" },
       select: {
         id: true,
+        color: true,
         title: true,
         content: true,
         noteDate: true,
@@ -110,4 +120,32 @@ async function getNotesCount() {
   return Result.successResult({ totalCount });
 }
 
-export { createNote, deleteNote, updateNote, getNote, getNotes, getNotesCount };
+async function getCalendarNotes(startDate: Date, endDate: Date) {
+  const notes = await prisma.note.findMany({
+    select: {
+      id: true,
+      color: true,
+      title: true,
+      noteDate: true,
+    },
+    where: {
+      noteDate: {
+        gte: startDate,
+        lt: endDate,
+      },
+    },
+    orderBy: { noteDate: "asc" },
+  });
+
+  return Result.successResult(notes);
+}
+
+export {
+  createNote,
+  deleteNote,
+  updateNote,
+  getNote,
+  getNotes,
+  getNotesCount,
+  getCalendarNotes,
+};

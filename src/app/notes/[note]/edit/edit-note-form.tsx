@@ -11,10 +11,17 @@ import SharedNoteForm from "@/components/note-form";
 import { Card, CardContent } from "@/components/ui/card";
 import { format, isValid } from "date-fns";
 import { SUPPORTED_NOTE_DATE_FORMAT } from "../../../../constants/date";
-import type { Note } from "@/generated/prisma/client";
+
+export type EditableNote = {
+  id: string;
+  title: string;
+  content: string;
+  color: string;
+  noteDate: Date;
+};
 
 type EditNoteFormProps = {
-  note: Note;
+  note: EditableNote;
 };
 
 export default function EditNoteForm({ note }: EditNoteFormProps) {
@@ -27,6 +34,7 @@ export default function EditNoteForm({ note }: EditNoteFormProps) {
   const form = useForm<NoteFormValues>({
     resolver: zodResolver(noteSchema),
     defaultValues: {
+      color: note.color,
       title: note.title,
       content: note.content,
       noteDate: defaultNoteDate,

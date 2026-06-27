@@ -4,6 +4,9 @@ import { SUPPORTED_NOTE_DATE_FORMAT } from "../constants/date";
 
 export const noteSchema = z
   .object({
+    color: z
+      .string()
+      .regex(/^#[0-9A-Fa-f]{6}$/, "Color must be a valid hex value"),
     title: z
       .string()
       .max(100, "Title must be at most 100 characters"),

@@ -16,6 +16,7 @@ import { Separator } from "./ui/separator";
 
 const links = [
   { href: "/notes", label: "Notes" },
+  { href: "/calendar", label: "Calendar" },
   { href: "/stats", label: "Stats" },
 ];
 

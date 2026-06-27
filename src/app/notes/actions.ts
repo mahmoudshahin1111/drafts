@@ -28,6 +28,7 @@ const createNoteAction = async (
     parsed.data.title,
     parsed.data.content,
     parsed.data.noteDate,
+    parsed.data.color,
   );
 
   if (result.success) {
@@ -78,6 +79,7 @@ const updateNoteAction = async (
     parsed.data.title,
     parsed.data.content,
     parsed.data.noteDate,
+    parsed.data.color,
   );
   if (result.success) {
     refresh();

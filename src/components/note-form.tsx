@@ -56,6 +56,34 @@ export default function SharedNoteForm({
       >
         <FormField
           control={form.control}
+          name="color"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Color</FormLabel>
+              <FormControl>
+                <div className="flex items-center gap-3">
+                  <Input
+                    type="color"
+                    className="h-10 w-16 p-1"
+                    value={field.value}
+                    onChange={field.onChange}
+                    disabled={isPending}
+                  />
+                  <Input
+                    value={field.value}
+                    onChange={field.onChange}
+                    disabled={isPending}
+                    placeholder="#3b82f6"
+                  />
+                </div>
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
+        <FormField
+          control={form.control}
           name="title"
           render={({ field }) => (
             <FormItem>
