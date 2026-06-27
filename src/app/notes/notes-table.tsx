@@ -117,7 +117,7 @@ export default function NotesTable({
                 <TableCell className="w-30 px-4">
                   <div className="flex flex-row gap-2">
                     <Button asChild variant="secondary">
-                      <Link href={`/notes/${item.id}/edit`}>Update</Link>
+                      <Link href={`/notes/${item.id}/edit`}>Edit</Link>
                     </Button>
                     <DeleteButton noteId={item.id} />
                   </div>
