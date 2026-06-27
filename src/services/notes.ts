@@ -1,6 +1,8 @@
 import { prisma } from "@/lib/prisma";
 import { APP_ERRORS } from "@/constants/errors";
 import { Result } from "@/models/result";
+import type { PagedResult } from "@/models/result";
+import type { Note } from "@/generated/prisma/client";
 
 async function createNote(
   title: string,
@@ -105,13 +107,15 @@ async function getNotes(page: number, pageSize: number) {
     return Result.failureResult(APP_ERRORS.PAGE_NOT_FOUND);
   }
 
-  return Result.successResult({
+  const pagedResult: PagedResult<Note> = {
     items: notes,
     page,
     pageSize,
     totalCount,
     totalPages,
-  });
+  };
+
+  return Result.successResult(pagedResult);
 }
 
 async function getNotesCount() {

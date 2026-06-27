@@ -3,6 +3,14 @@ type ResultError = {
   message: string;
 };
 
+export type PagedResult<T> = {
+  items: T[];
+  page: number;
+  pageSize: number;
+  totalCount: number;
+  totalPages: number;
+};
+
 export class Result<T> {
   success: boolean;
   data: T | null;

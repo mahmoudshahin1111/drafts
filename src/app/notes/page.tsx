@@ -4,8 +4,9 @@ import NotesTable from "./notes-table";
 import NotesCards from "./notes-cards";
 import { notFound } from "next/navigation";
 import type { Note } from "@/generated/prisma/client";
+import type { PagedResult } from "@/models/result";
 import { notesPaginationQuerySchema } from "@/schemas/note";
-import { getAllNotes, getNotes } from "@/services/notes";
+import { getNotes } from "@/services/notes";
 import {
   Empty,
   EmptyHeader,
@@ -17,7 +18,7 @@ import {
 import { ArrowUpRightIcon, NotepadText } from "lucide-react";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import PageHeader from "@/components/page-header";
-import { DEFAULT_PAGE_SIZE } from "@/constants/page";
+import { DEFAULT_PAGE, DEFAULT_PAGE_SIZE } from "@/constants/page";
 
 export default async function Page({
   searchParams,
@@ -28,13 +29,15 @@ export default async function Page({
   const currentView = query.view === "cards" ? "cards" : "table";
 
   if (currentView === "cards") {
-    const cardsResult = await getAllNotes();
+    const cardsResult = await getNotes(DEFAULT_PAGE, DEFAULT_PAGE_SIZE);
 
     if (!cardsResult.success || !cardsResult.data) {
       return notFound();
     }
 
-    if (cardsResult.data.length === 0) {
+    const cardsData = cardsResult.data as PagedResult<Note>;
+
+    if (cardsData.items.length === 0) {
       return (
         <div className="mx-auto flex w-full max-w-6xl flex-col gap-6 px-4 py-6 lg:px-8">
           <PageHeader
@@ -81,7 +84,12 @@ export default async function Page({
             </Button>
           </CardHeader>
           <CardContent>
-            <NotesCards items={cardsResult.data as Note[]} />
+            <NotesCards
+              initialItems={cardsData.items}
+              initialPage={cardsData.page}
+              pageSize={cardsData.pageSize}
+              totalPages={cardsData.totalPages}
+            />
           </CardContent>
         </Card>
       </div>
@@ -102,12 +110,7 @@ export default async function Page({
   if (!result.success) {
     return notFound();
   }
-  const { items, page, pageSize, totalPages } = result.data as {
-    items: Note[];
-    page: number;
-    pageSize: number;
-    totalPages: number;
-  };
+  const { items, page, pageSize, totalPages } = result.data as PagedResult<Note>;
 
   if (items?.length === 0) {
     return (
