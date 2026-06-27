@@ -76,7 +76,9 @@ export default function NotesTable({
             <TableRow>
               <TableHead className="w-30">Title</TableHead>
               <TableHead>Content</TableHead>
-              <TableHead className="w-30 ps-4">Actions</TableHead>
+              <TableHead className="w-30 ps-4 sticky right-0">
+                Actions
+              </TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -102,7 +104,7 @@ export default function NotesTable({
                     renderEmpty("No content")
                   )}
                 </TableCell>
-                <TableCell className="w-30">
+                <TableCell className="w-30 px-4">
                   <div className="flex flex-row gap-2">
                     <Button asChild variant="secondary">
                       <Link href={`/notes/${item.id}/edit`}>Update</Link>
