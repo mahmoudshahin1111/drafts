@@ -9,23 +9,28 @@ import { updateNoteAction } from "../../actions";
 import { toast } from "sonner";
 import SharedNoteForm from "@/components/note-form";
 import { Card, CardContent } from "@/components/ui/card";
-
-type EditNote = {
-  id: string;
-  title: string;
-  content: string;
-};
+import { format, isValid } from "date-fns";
+import { SUPPORTED_NOTE_DATE_FORMAT } from "../../../../constants/date";
+import type { Note } from "@/generated/prisma/client";
 
 type EditNoteFormProps = {
-  note: EditNote;
+  note: Note;
 };
 
 export default function EditNoteForm({ note }: EditNoteFormProps) {
   const [state, dispatch, isPending] = useActionState(updateNoteAction, null);
 
+  const defaultNoteDate = note.noteDate && isValid(note.noteDate)
+    ? format(note.noteDate, SUPPORTED_NOTE_DATE_FORMAT)
+    : "";
+
   const form = useForm<NoteFormValues>({
     resolver: zodResolver(noteSchema),
-    defaultValues: { title: note.title, content: note.content },
+    defaultValues: {
+      title: note.title,
+      content: note.content,
+      noteDate: defaultNoteDate,
+    },
   });
 
   const onValidSubmit: SubmitHandler<NoteFormValues> = (values) => {

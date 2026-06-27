@@ -3,7 +3,7 @@ import Link from "next/link";
 import NotesTable from "./notes-table";
 import { getNotesAction } from "./actions";
 import { notFound } from "next/navigation";
-import { Note } from "@/models/note";
+import type { Note } from "@/generated/prisma/client";
 import {
   Empty,
   EmptyHeader,

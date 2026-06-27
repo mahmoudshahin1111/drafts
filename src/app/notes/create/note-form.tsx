@@ -10,6 +10,7 @@ import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 import { Card, CardContent } from "@/components/ui/card";
 import SharedNoteForm from "@/components/note-form";
+import { getCurrentDate } from "@/lib/utils";
 
 export default function NoteForm() {
   const [state, dispatch, isPending] = useActionState(createNoteAction, null);
@@ -17,7 +18,7 @@ export default function NoteForm() {
 
   const form = useForm<NoteFormValues>({
     resolver: zodResolver(noteSchema),
-    defaultValues: { title: "", content: "" },
+    defaultValues: { title: "", content: "", noteDate: getCurrentDate() },
   });
 
   const onValidSubmit: SubmitHandler<NoteFormValues> = (values) => {
@@ -28,7 +29,7 @@ export default function NoteForm() {
 
   useEffect(() => {
     if (state?.success && !isPending) {
-      form.reset();
+      form.reset({ title: "", content: "", noteDate: getCurrentDate() });
       toast.success("Note created successfully");
       router.replace("/notes");
     }

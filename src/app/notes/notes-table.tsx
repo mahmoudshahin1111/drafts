@@ -8,7 +8,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import type { Note } from "@/models/note";
+import type { Note } from "@/generated/prisma/client";
 import Link from "next/link";
 import DeleteButton from "./delete-button";
 import { Button } from "@/components/ui/button";

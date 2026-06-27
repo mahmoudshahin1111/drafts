@@ -1,19 +1,20 @@
 import { prisma } from "@/lib/prisma";
 import { APP_ERRORS } from "@/constants/errors";
-import { Note } from "@/models/note";
 import { Result } from "@/models/result";
 
-async function createNote(title: string, content: string) {
-  const note = await prisma.note.create({ data: { title, content } });
-  return Result.successResult(
-    new Note({
-      id: note.id,
-      title: note.title,
-      content: note.content,
-      updatedAt: note.updatedAt,
-      createdAt: note.createdAt,
-    }).toJSON(),
-  );
+async function createNote(title: string, content: string, noteDate: string) {
+  const note = await prisma.note.create({
+    select: {
+      id: true,
+      title: true,
+      content: true,
+      noteDate: true,
+      createdAt: true,
+      updatedAt: true,
+    },
+    data: { title, content, noteDate: new Date(noteDate) },
+  });
+  return Result.successResult(note);
 }
 
 async function deleteNote(noteId: string) {
@@ -25,40 +26,47 @@ async function deleteNote(noteId: string) {
   return Result.successResult(null);
 }
 
-async function updateNote(noteId: string, title: string, content: string) {
+async function updateNote(
+  noteId: string,
+  title: string,
+  content: string,
+  noteDate: string,
+) {
   const existing = await prisma.note.findUnique({ where: { id: noteId } });
   if (!existing) {
     return Result.failureResult(APP_ERRORS.NOTE_NOT_FOUND);
   }
   const note = await prisma.note.update({
+    select: {
+      id: true,
+      title: true,
+      content: true,
+      noteDate: true,
+      createdAt: true,
+      updatedAt: true,
+    },
     where: { id: noteId },
-    data: { title, content },
+    data: { title, content, noteDate: new Date(noteDate) },
   });
-  return Result.successResult(
-    new Note({
-      id: note.id,
-      title: note.title,
-      content: note.content,
-      updatedAt: note.updatedAt,
-      createdAt: note.createdAt,
-    }).toJSON(),
-  );
+  return Result.successResult(note);
 }
 
 async function getNote(noteId: string) {
-  const note = await prisma.note.findUnique({ where: { id: noteId } });
+  const note = await prisma.note.findUnique({
+    where: { id: noteId },
+    select: {
+      id: true,
+      title: true,
+      content: true,
+      noteDate: true,
+      createdAt: true,
+      updatedAt: true,
+    },
+  });
   if (!note) {
     return Result.failureResult(APP_ERRORS.NOTE_NOT_FOUND);
   }
-  return Result.successResult(
-    new Note({
-      id: note.id,
-      title: note.title,
-      content: note.content,
-      updatedAt: note.updatedAt,
-      createdAt: note.createdAt,
-    }).toJSON(),
-  );
+  return Result.successResult(note);
 }
 
 async function getNotes(page: number, pageSize: number) {
@@ -68,6 +76,14 @@ async function getNotes(page: number, pageSize: number) {
     prisma.note.count(),
     prisma.note.findMany({
       orderBy: { createdAt: "desc" },
+      select: {
+        id: true,
+        title: true,
+        content: true,
+        noteDate: true,
+        createdAt: true,
+        updatedAt: true,
+      },
       skip,
       take: pageSize,
     }),
@@ -80,15 +96,7 @@ async function getNotes(page: number, pageSize: number) {
   }
 
   return Result.successResult({
-    items: notes.map((e) =>
-      new Note({
-        id: e.id,
-        title: e.title,
-        content: e.content,
-        updatedAt: e.updatedAt,
-        createdAt: e.createdAt,
-      }).toJSON(),
-    ),
+    items: notes,
     page,
     pageSize,
     totalCount,

@@ -1,4 +1,6 @@
-import { optional, z } from "zod";
+import { isMatch } from "date-fns";
+import { z } from "zod";
+import { SUPPORTED_NOTE_DATE_FORMAT } from "../constants/date";
 
 export const noteSchema = z
   .object({
@@ -8,6 +10,13 @@ export const noteSchema = z
     content: z
       .string()
       .max(1000, "Content must be at most 1000 characters"),
+    noteDate: z
+      .string()
+      .min(1, "Note date is required")
+      .refine(
+        (value) => isMatch(value, SUPPORTED_NOTE_DATE_FORMAT),
+        "Note date must be a valid datetime",
+      ),
   })
   .refine((data) => data.title?.trim() !== "" || data.content?.trim() !== "", {
     path: ["global"],

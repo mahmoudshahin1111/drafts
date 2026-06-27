@@ -24,7 +24,11 @@ const createNoteAction = async (
     }).toJSON();
   }
 
-  const result = await createNote(parsed.data.title, parsed.data.content);
+  const result = await createNote(
+    parsed.data.title,
+    parsed.data.content,
+    parsed.data.noteDate,
+  );
 
   if (result.success) {
     refresh();
@@ -73,6 +77,7 @@ const updateNoteAction = async (
     parsed.data.noteId,
     parsed.data.title,
     parsed.data.content,
+    parsed.data.noteDate,
   );
   if (result.success) {
     refresh();

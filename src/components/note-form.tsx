@@ -1,5 +1,6 @@
 "use client";
 
+import { format } from "date-fns";
 import type { SubmitHandler, UseFormReturn } from "react-hook-form";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
@@ -14,7 +15,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Spinner } from "@/components/ui/spinner";
 import { Textarea } from "@/components/ui/textarea";
-import { cn } from "@/lib/utils";
+import { cn, mergeDate, splitDate } from "@/lib/utils";
 import type { NoteFormValues } from "@/schemas/note";
 
 type SharedNoteFormProps = {
@@ -27,6 +28,8 @@ type SharedNoteFormProps = {
   errorMessage?: string;
   className?: string;
 };
+
+const NOTE_DATE_INPUT_FORMAT = "yyyy-MM-dd";
 
 export default function SharedNoteForm({
   form,
@@ -77,6 +80,45 @@ export default function SharedNoteForm({
               <FormMessage />
             </FormItem>
           )}
+        />
+
+        <FormField
+          control={form.control}
+          name="noteDate"
+          render={({ field }) => {
+            const { date, time } = splitDate(field.value);
+
+            return (
+              <FormItem>
+                <FormLabel>Note Date</FormLabel>
+                <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
+                  <Input
+                    type="date"
+                    value={date}
+                    onChange={(event) => {
+                      const nextDate = event.target.value;
+                      const nextValue = mergeDate(nextDate, time || "00:00");
+                      field.onChange(nextValue);
+                    }}
+                    disabled={isPending}
+                  />
+
+                  <Input
+                    type="time"
+                    value={time}
+                    onChange={(event) => {
+                      const nextTime = event.target.value;
+                      const dateForMerge = date || format(new Date(), NOTE_DATE_INPUT_FORMAT);
+                      const nextValue = mergeDate(dateForMerge, nextTime);
+                      field.onChange(nextValue);
+                    }}
+                    disabled={isPending}
+                  />
+                </div>
+                <FormMessage />
+              </FormItem>
+            );
+          }}
         />
 
         {globalErrorMessage && (
