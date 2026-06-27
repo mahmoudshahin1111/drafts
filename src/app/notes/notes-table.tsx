@@ -1,5 +1,6 @@
 "use client";
 
+import { format } from "date-fns";
 import {
   Table,
   TableBody,
@@ -76,6 +77,7 @@ export default function NotesTable({
             <TableRow>
               <TableHead className="w-30">Title</TableHead>
               <TableHead>Content</TableHead>
+              <TableHead className="w-44">Note Date</TableHead>
               <TableHead className="w-30 ps-4 sticky right-0">
                 Actions
               </TableHead>
@@ -103,6 +105,14 @@ export default function NotesTable({
                   ) : (
                     renderEmpty("No content")
                   )}
+                </TableCell>
+                <TableCell>
+                  <div
+                    className="whitespace-nowrap text-sm text-muted-foreground"
+                    title={format(item.noteDate, "PPP p")}
+                  >
+                    {format(item.noteDate, "PPP p")}
+                  </div>
                 </TableCell>
                 <TableCell className="w-30 px-4">
                   <div className="flex flex-row gap-2">
